@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Herramienta | Gerentes y Promotores</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(145deg, #e0eafc 0%, #cfdef3 100%);
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem 1rem;
+        }
+
+        .tool-card {
+            max-width: 750px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 48px 48px 40px 40px;
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.35);
+            overflow: hidden;
+        }
+
+        .header-logo {
+            background: #0a2b3e;
+            padding: 1.2rem 1.5rem;
+            text-align: center;
+            border-bottom: 4px solid #f9b81b;
+        }
+
+        .logo-img {
+            max-width: 180px;
+            width: 100%;
+            height: auto;
+            border-radius: 20px;
+            background: rgba(255,255,240,0.1);
+            padding: 6px 12px;
+        }
+
+        .content {
+            padding: 2rem 1.8rem 2.2rem;
+        }
+
+        .titulo-herramienta {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #0a2b3e;
+            text-align: center;
+            margin-bottom: 1.8rem;
+            background: #fef7e0;
+            display: inline-block;
+            width: auto;
+            border-radius: 60px;
+            padding: 0.5rem 1.5rem;
+        }
+
+        .botones-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .btn-principal {
+            background: linear-gradient(95deg, #1f6392 0%, #0d4770 100%);
+            border: none;
+            width: 100%;
+            padding: 1.2rem 1rem;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: white;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: all 0.25s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+        }
+
+        .btn-principal:hover {
+            transform: translateY(-3px);
+            background: linear-gradient(95deg, #0d5b89 0%, #0a3a5a 100%);
+        }
+
+        .btn-whatsapp {
+            background: linear-gradient(95deg, #25D366 0%, #128C7E 100%);
+        }
+
+        .btn-paquete {
+            background: linear-gradient(95deg, #e67e22 0%, #d35400 100%);
+        }
+
+        .btn-gastos {
+            background: linear-gradient(95deg, #e74c3c 0%, #c0392b 100%);
+        }
+
+        .btn-gastos:hover {
+            background: linear-gradient(95deg, #c0392b 0%, #a93226 100%);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(6px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0.2s, opacity 0.2s;
+        }
+
+        .modal-overlay.active {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .modal-container {
+            background: #fffef7;
+            max-width: 600px;
+            width: 90%;
+            max-height: 85vh;
+            border-radius: 36px;
+            overflow-y: auto;
+            box-shadow: 0 30px 45px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            background: #0a2b3e;
+            padding: 1rem 1.5rem;
+            color: white;
+            font-weight: bold;
+            font-size: 1.3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+        }
+
+        .modal-header-warning {
+            background: #d35400;
+        }
+
+        .modal-header-gastos {
+            background: #c0392b;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: #ffd966;
+            font-size: 1.8rem;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            padding: 1.8rem;
+        }
+
+        .mensaje-principal {
+            background: #eef3fc;
+            border-left: 6px solid #f9b81b;
+            padding: 0.8rem 1.2rem;
+            border-radius: 24px;
+            margin-bottom: 1.2rem;
+            font-size: 1rem;
+        }
+
+        .tip-box {
+            background: #fff2df;
+            padding: 0.8rem 1.2rem;
+            border-radius: 28px;
+            margin: 1.2rem 0;
+        }
+
+        .form-group {
+            margin: 1.2rem 0;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 60px;
+            border: 1px solid #ddd;
+            font-size: 0.95rem;
+            background: white;
+            cursor: pointer;
+        }
+
+        .btn-copy-grande {
+            background: #2c7a47;
+            color: white;
+            border: none;
+            padding: 1rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 60px;
+            width: 100%;
+            cursor: pointer;
+            margin-top: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: 0.2s;
+        }
+
+        .btn-copy-grande:hover {
+            background: #1e5f38;
+        }
+
+        .footer-mensaje {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-weight: 700;
+            color: #bd7b13;
+        }
+
+        .aviso-copia {
+            font-size: 0.7rem;
+            text-align: center;
+            margin-top: 10px;
+            color: #6c757d;
+        }
+
+        .preview-mensaje {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 20px;
+            margin: 1rem 0;
+            font-size: 0.85rem;
+            border: 1px dashed #ccc;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+
+<div class="tool-card">
+    <div class="header-logo">
+        <img class="logo-img" src="https://i.pinimg.com/736x/16/71/90/16719070ba26c45eb14ddf3f3d4fc69c.jpg" 
+             alt="Logo Contact Center">
+    </div>
+    <div class="content">
+        <div style="text-align: center;">
+            <div class="titulo-herramienta">
+                📋 RESPUESTA A PETICIONES Y SOLICITUDES 📋<br>
+                <span style="font-size: 1rem;">Gerentes & Promotores</span>
+            </div>
+        </div>
+        
+        <div class="botones-container">
+            <button id="btnRecontacto" class="btn-principal">
+                ✍️ SOLICITUD DE RECONTACTO ✍️
+            </button>
+            
+            <button id="btnWhatsappContacto" class="btn-principal btn-whatsapp">
+                💬 CONTACTO POR WHATSAPP 💬
+            </button>
+
+            <button id="btnPaqueteNoSolicitado" class="btn-principal btn-paquete">
+                📦 PAQUETE NO SOLICITADO 📦
+            </button>
+
+            <button id="btnGastosInstalacion" class="btn-principal btn-gastos">
+                🔧 NO INDICARON GASTOS DE INSTALACIÓN 🔧
+            </button>
+        </div>
+        
+        <div style="text-align: center; font-size: 0.75rem; color: #6c757d;">
+            ⚡ Selecciona la opción que necesites
+        </div>
+    </div>
+</div>
+
+<!-- MODAL 1: SOLICITUD DE RECONTACTO -->
+<div id="modalRecontacto" class="modal-overlay">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h3>📢 SOLICITUD DE RECONTACTO</h3>
+            <button class="close-modal" data-modal="recontacto">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="mensaje-principal">
+                <em>¡CON GUSTO HAREMOS EL RECONTACTO!</em> 🤝
+            </div>
+            <p>Pero ten presente que no se hará de forma inmediata, ya que en este momento procesamos las <strong>VALIDACIONES DE PRIMER CONTACTO</strong> tuyas y de otros amigos GERENTES. Te pedimos paciencia; en breve procesaremos el <strong>RECONTACTO CON EL CLIENTE.</strong></p>
+            
+            <div class="tip-box">
+                💡 <strong>TIP´S IMPORTANTE:</strong><br>
+                Puedes ayudarnos a evitar el recontacto si le das el número de nuestro <em><strong>CONTACT CENTER</strong></em> a tu cliente: 
+                <span style="background:#1f6392; color:white; display:inline-block; padding:0.2rem 0.8rem; border-radius:40px;">8130670491</span>. ¡Así será más rápido y fácil procesar tus validaciones! 
+                <div style="background:#fee2e2; border-left:4px solid #d32f2f; padding:0.6rem 1rem; border-radius:20px; margin:0.8rem 0;">
+                    ⛔<strong>IMPORTANTE EL CLIENTE DEBE AGREGARLO A SUS CONTACTOS!</strong>⛔
+                </div>
+            </div>
+            
+            <div class="tip-box">
+                💡 <strong>TIP 2:</strong> Antes de enviar la solicitud, verifica bien los datos de tu cliente: <strong>Número principal, número Secundario</strong> y toda la información del servicio a contratar.
+            </div>
+            
+            <div class="footer-mensaje">
+                <strong>¡SI TÚ CRECES, CRECEMOS CONTIGO!</strong> 📈✨
+            </div>
+            
+            <button id="copyRecontactoBtn" class="btn-copy-grande">📋 COPIAR MENSAJE COMPLETO 📋</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL 2: CONTACTO WHATSAPP -->
+<div id="modalWhatsapp" class="modal-overlay">
+    <div class="modal-container">
+        <div class="modal-header" style="background:#075E54;">
+            <h3>💬 CONTACTO POR WHATSAPP</h3>
+            <button class="close-modal" data-modal="whatsapp">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="mensaje-principal" style="background:#dcf8c5; border-left-color:#25D366;">
+                <strong>*¡Será un placer realizar el contacto vía WhatsApp!*</strong> 💬
+            </div>
+            <p>Antes de hacerlo, por favor solicita a tu cliente que agregue nuestro número a sus contactos 📲. Esto hará que el proceso sea más rápido y sencillo.</p>
+            <div class="tip-box" style="background:#e8f5e9;">
+                📌 <strong>NÚMERO A AGREGAR:</strong> <span style="background:#25D366; color:white; padding:0.2rem 0.8rem; border-radius:40px;">9516689372</span>
+            </div>
+            <div style="margin:1rem 0; text-align:center;"><em><strong>Al agregarlo, evitaremos que el contacto sea bloqueado por spam</strong></em> 🛡️</div>
+            <div class="footer-mensaje"><strong>¡GRACIAS POR TU APOYO!</strong> 🙏<br>Por favor, indícanos en cuanto lo agregue para realizar la llamada. 📞</div>
+            <div style="text-align:center; margin:1rem 0; font-weight:600;">*EQUIPO CONTACT CENTER* 🎧</div>
+            <button id="copyWhatsappBtn" class="btn-copy-grande" style="background:#075E54;">💬 COPIAR MENSAJE WHATSAPP 💬</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL 3: PAQUETE NO SOLICITADO -->
+<div id="modalPaquete" class="modal-overlay">
+    <div class="modal-container">
+        <div class="modal-header modal-header-warning">
+            <h3>📦 PAQUETE NO SOLICITADO</h3>
+            <button class="close-modal" data-modal="paquete">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label>📌 Paquete que el cliente indica NO solicitado:</label>
+                <select id="paqueteNoSolicitado" class="form-select"></select>
+            </div>
+            <div class="form-group">
+                <label>✅ Paquete CORRECTO que el cliente manifiesta:</label>
+                <select id="paqueteCorrecto" class="form-select"></select>
+            </div>
+            <div class="preview-mensaje" id="previewMensajePaquete"></div>
+            <button id="copyPaqueteBtn" class="btn-copy-grande" style="background:#d35400;">📋 COPIAR MENSAJE COMPLETO 📋</button>
+            <div class="aviso-copia">Los paquetes entre paréntesis aparecerán en NEGRITA al enviar a WhatsApp</div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL 4: GASTOS DE INSTALACIÓN NO INDICADOS -->
+<div id="modalGastos" class="modal-overlay">
+    <div class="modal-container">
+        <div class="modal-header modal-header-gastos">
+            <h3>🔧 GASTOS DE INSTALACIÓN NO INDICADOS</h3>
+            <button class="close-modal" data-modal="gastos">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="preview-mensaje" id="previewMensajeGastos" style="background:#fff5f5; border-color:#e74c3c;"></div>
+            <button id="copyGastosBtn" class="btn-copy-grande" style="background:#c0392b;">📋 COPIAR MENSAJE COMPLETO 📋</button>
+            <div class="aviso-copia">Mensaje sobre falta de indicación de gastos de instalación</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // DEFINICIÓN DE PAQUETES
+    const paquetesList = [
+        { categoria: "Residencial - Internet+Telefonía", desc: "Internet+Telefonía 120MB - $389/mes" },
+        { categoria: "Residencial - Internet+Telefonía", desc: "Internet+Telefonía 150MB - $435/mes" },
+        { categoria: "Residencial - Internet+Telefonía", desc: "Internet+Telefonía 250MB - $499/mes" },
+        { categoria: "Residencial - Internet+Telefonía", desc: "Internet+Telefonía 350MB - $599/mes" },
+        { categoria: "Residencial - Internet+Telefonía", desc: "Internet+Telefonía 500MB - $649/mes" },
+        { categoria: "Residencial - Internet+Telefonía", desc: "Internet+Telefonía 600MB - $725/mes" },
+        { categoria: "Residencial - Internet+Telefonía", desc: "Internet+Telefonía 850MB - $999/mes" },
+        { categoria: "Residencial - Internet+Telefonía", desc: "Internet+Telefonía 1000MB - $1399/mes" },
+        { categoria: "Residencial - Solo Internet", desc: "Solo Internet 120MB - $349/mes" },
+        { categoria: "Residencial - Solo Internet", desc: "Solo Internet 150MB - $399/mes" },
+        { categoria: "Residencial - Solo Internet", desc: "Solo Internet 250MB - $449/mes" },
+        { categoria: "Residencial - Solo Internet", desc: "Solo Internet 500MB - $549/mes" },
+        { categoria: "Residencial - Solo Internet", desc: "Solo Internet 600MB - $649/mes" },
+        { categoria: "Residencial - Solo Internet", desc: "Solo Internet 850MB - $899/mes" },
+        { categoria: "Comercial - Internet+Telefonía", desc: "Internet+Telefonía 120MB - $399/mes" },
+        { categoria: "Comercial - Internet+Telefonía", desc: "Internet+Telefonía 250MB - $549/mes" },
+        { categoria: "Comercial - Internet+Telefonía", desc: "Internet+Telefonía 350MB - $649/mes" },
+        { categoria: "Comercial - Internet+Telefonía", desc: "Internet+Telefonía 500MB - $799/mes" },
+        { categoria: "Comercial - Internet+Telefonía", desc: "Internet+Telefonía 750MB - $1499/mes" },
+        { categoria: "Comercial - Internet+Telefonía", desc: "Internet+Telefonía 1000MB - $2289/mes" },
+        { categoria: "Comercial - Solo Internet", desc: "Solo Internet 120MB - $349/mes" },
+        { categoria: "Comercial - Solo Internet", desc: "Solo Internet 150MB - $399/mes" },
+        { categoria: "Comercial - Solo Internet", desc: "Solo Internet 250MB - $449/mes" },
+        { categoria: "Comercial - Solo Internet", desc: "Solo Internet 350MB - $499/mes" },
+        { categoria: "Comercial - Solo Internet", desc: "Solo Internet 500MB - $549/mes" }
+    ];
+
+    function populateSelects() {
+        const selectNo = document.getElementById('paqueteNoSolicitado');
+        const selectCorrecto = document.getElementById('paqueteCorrecto');
+        if (!selectNo || !selectCorrecto) return;
+        paquetesList.forEach(pkg => {
+            const option1 = document.createElement('option');
+            option1.value = pkg.desc;
+            option1.textContent = `${pkg.categoria} → ${pkg.desc}`;
+            selectNo.appendChild(option1);
+            const option2 = document.createElement('option');
+            option2.value = pkg.desc;
+            option2.textContent = `${pkg.categoria} → ${pkg.desc}`;
+            selectCorrecto.appendChild(option2);
+        });
+    }
+    
+    // Mensaje PAQUETE NO SOLICITADO
+    function generarMensajePaquete() {
+        const selectNo = document.getElementById('paqueteNoSolicitado');
+        const selectCorrecto = document.getElementById('paqueteCorrecto');
+        const noSolicitado = selectNo ? selectNo.value : "Internet+Telefonía 150MB - $435/mes";
+        const correcto = selectCorrecto ? selectCorrecto.value : "Solo Internet 850MB - $899/mes";
+        
+        return `*ESTIMADO GERENTE:* 👤
+_*INFORMACIÓN IMPORTANTE SOBRE SU SOLICITUD DE VALIDACIÓN:*_ ⚠️
+
+*El cliente indica que NO es el paquete solicitado* ; manifiesta que el plan correcto es: *(${correcto})*
+
+*_Paquete no solicitado por el cliente_* : *(${noSolicitado})*
+
+Por favor, verificar la información correcta al momento de realizar el registro de la venta. 📝
+
+*Quedamos atentos a que realicen la corrección para contactar al cliente nuevamente y proceder con la validación. Por el momento, la misma queda: CANCELADA* . 🚫
+
+*EQUIPO DE VALIDACIÓN* 🎧
+*CONTACT CENTER*`;
+    }
+    
+    // Mensaje GASTOS DE INSTALACIÓN NO INDICADOS
+    function generarMensajeGastos() {
+        return `*ESTIMADO GERENTE Y PROMOTOR:* 👤
+
+⛔ *INFORMACIÓN IMPORTANTE:* ⛔
+El cliente informa que _*NO LE INDICARON GASTOS DE INSTALACIÓN*_ . ⚠️
+
+Al momento de la validación, el cliente notifica que no fue informado sobre los costos de instalación y, por este motivo, decide *NO CONTINUAR con la contratación del servicio* . 🚫
+
+_*Dicha solicitud queda en estatus: CANCELADA*_ . ❌
+
+Si el cliente cambia de opinión, por favor subir nuevamente la validación con la información aclarada. 🔄
+
+Atentamente,
+*EQUIPO DE VALIDACIÓN* 🎧`;
+    }
+    
+    function updatePreviewPaquete() {
+        const previewDiv = document.getElementById('previewMensajePaquete');
+        if (previewDiv) previewDiv.textContent = generarMensajePaquete();
+    }
+    
+    function updatePreviewGastos() {
+        const previewDiv = document.getElementById('previewMensajeGastos');
+        if (previewDiv) previewDiv.textContent = generarMensajeGastos();
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        populateSelects();
+        updatePreviewPaquete();
+        updatePreviewGastos();
+        
+        const selectNo = document.getElementById('paqueteNoSolicitado');
+        const selectCorrecto = document.getElementById('paqueteCorrecto');
+        if (selectNo) selectNo.addEventListener('change', updatePreviewPaquete);
+        if (selectCorrecto) selectCorrecto.addEventListener('change', updatePreviewPaquete);
+        
+        // Botones principales
+        const btnRecontacto = document.getElementById('btnRecontacto');
+        const btnWhatsapp = document.getElementById('btnWhatsappContacto');
+        const btnPaquete = document.getElementById('btnPaqueteNoSolicitado');
+        const btnGastos = document.getElementById('btnGastosInstalacion');
+        
+        const modalRecontacto = document.getElementById('modalRecontacto');
+        const modalWhatsapp = document.getElementById('modalWhatsapp');
+        const modalPaquete = document.getElementById('modalPaquete');
+        const modalGastos = document.getElementById('modalGastos');
+        
+        function openModal(modal) { if (modal) { modal.classList.add('active'); document.body.style.overflow = 'hidden'; } }
+        function closeModal(modal) { if (modal) { modal.classList.remove('active'); document.body.style.overflow = ''; } }
+        
+        if (btnRecontacto) btnRecontacto.addEventListener('click', () => openModal(modalRecontacto));
+        if (btnWhatsapp) btnWhatsapp.addEventListener('click', () => openModal(modalWhatsapp));
+        if (btnPaquete) btnPaquete.addEventListener('click', () => { updatePreviewPaquete(); openModal(modalPaquete); });
+        if (btnGastos) btnGastos.addEventListener('click', () => { updatePreviewGastos(); openModal(modalGastos); });
+        
+        // Cerrar con X
+        document.querySelectorAll('.close-modal').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const modalId = btn.getAttribute('data-modal');
+                if (modalId === 'recontacto') closeModal(modalRecontacto);
+                if (modalId === 'whatsapp') closeModal(modalWhatsapp);
+                if (modalId === 'paquete') closeModal(modalPaquete);
+                if (modalId === 'gastos') closeModal(modalGastos);
+            });
+        });
+        
+        // Cerrar con overlay
+        modalRecontacto?.addEventListener('click', (e) => { if (e.target === modalRecontacto) closeModal(modalRecontacto); });
+        modalWhatsapp?.addEventListener('click', (e) => { if (e.target === modalWhatsapp) closeModal(modalWhatsapp); });
+        modalPaquete?.addEventListener('click', (e) => { if (e.target === modalPaquete) closeModal(modalPaquete); });
+        modalGastos?.addEventListener('click', (e) => { if (e.target === modalGastos) closeModal(modalGastos); });
+        
+        // Textos de mensajes fijos
+        function getRecontactoText() {
+            return `_*¡CON GUSTO HAREMOS EL RECONTACTO!*_ 🤝
+
+Pero ten presente que no se hará de forma inmediata, ya que en este momento procesamos las *VALIDACIONES DE PRIMER CONTACTO* tuyas y de otros amigos GERENTES. Te pedimos paciencia; en breve procesaremos el *RECONTACTO CON EL CLIENTE.*
+
+💡 *TIP´S IMPORTANTE:*
+Puedes ayudarnos a evitar el recontacto si le das el número de nuestro _*CONTACT CENTER*_ a tu cliente: 8130670491. ¡Así será más rápido y fácil procesar tus validaciones! ⛔*IMPORTANTE EL CLIENTE DEBE AGREGARLO A SUS CONTACTOS!*⛔
+
+💡 *TIP 2:* Antes de enviar la solicitud, verifica bien los datos de tu cliente: *Número principal, número Secundario* y toda la información del servicio a contratar.
+
+*¡SI TÚ CRECES, CRECEMOS CONTIGO!* 📈✨`;
+        }
+        
+        function getWhatsappText() {
+            return `*¡Será un placer realizar el contacto vía WhatsApp!* 💬
+
+Antes de hacerlo, por favor solicita a tu cliente que agregue nuestro número a sus contactos 📲. Esto hará que el proceso sea más rápido y sencillo para el cliente, para ti y para nosotros.
+
+📌 *NÚMERO A AGREGAR:* 9516689372
+
+_*Al agregarlo, evitaremos que el contacto sea bloqueado por spam*_ 🛡️
+
+*¡GRACIAS POR TU APOYO!* 🙏 Por favor, indícanos en cuanto lo agregue para realizar la llamada. 📞
+
+*EQUIPO CONTACT CENTER* 🎧`;
+        }
+        
+        async function copyToClipboard(text, buttonElement, successMsg) {
+            try {
+                await navigator.clipboard.writeText(text);
+                const original = buttonElement.innerHTML;
+                buttonElement.innerHTML = successMsg;
+                buttonElement.style.background = '#1f8a4c';
+                setTimeout(() => {
+                    buttonElement.innerHTML = original;
+                    if (buttonElement.id === 'copyWhatsappBtn') buttonElement.style.background = '#075E54';
+                    else if (buttonElement.id === 'copyPaqueteBtn') buttonElement.style.background = '#d35400';
+                    else if (buttonElement.id === 'copyGastosBtn') buttonElement.style.background = '#c0392b';
+                    else buttonElement.style.background = '#2c7a47';
+                }, 2000);
+            } catch (err) {
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                alert('✅ Mensaje copiado');
+            }
+        }
+        
+        const copyRecontacto = document.getElementById('copyRecontactoBtn');
+        const copyWhatsapp = document.getElementById('copyWhatsappBtn');
+        const copyPaquete = document.getElementById('copyPaqueteBtn');
+        const copyGastos = document.getElementById('copyGastosBtn');
+        
+        if (copyRecontacto) copyRecontacto.addEventListener('click', () => copyToClipboard(getRecontactoText(), copyRecontacto, '✅ MENSAJE COPIADO'));
+        if (copyWhatsapp) copyWhatsapp.addEventListener('click', () => copyToClipboard(getWhatsappText(), copyWhatsapp, '✅ MENSAJE WHATSAPP COPIADO'));
+        if (copyPaquete) copyPaquete.addEventListener('click', () => copyToClipboard(generarMensajePaquete(), copyPaquete, '✅ PAQUETE COPIADO'));
+        if (copyGastos) copyGastos.addEventListener('click', () => copyToClipboard(generarMensajeGastos(), copyGastos, '✅ GASTOS COPIADO'));
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (modalRecontacto?.classList.contains('active')) closeModal(modalRecontacto);
+                if (modalWhatsapp?.classList.contains('active')) closeModal(modalWhatsapp);
+                if (modalPaquete?.classList.contains('active')) closeModal(modalPaquete);
+                if (modalGastos?.classList.contains('active')) closeModal(modalGastos);
+            }
+        });
+    });
+</script>
+</body>
+</html>
